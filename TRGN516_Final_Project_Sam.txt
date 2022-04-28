@@ -1,0 +1,58 @@
+brew services start mongodb-community@5.0
+
+(Open another terminal）
+mongo
+
+(Open another terminal）
+mongoimport --host 127.0.0.1:27017 --collection px_final --db Mongo_clingen_final --file=/Users/samuellu/Desktop/px_final.json
+
+> show dbs
+Mongo_clingen        0.000GB
+Mongo_clingen_2      0.000GB
+Mongo_clingen_final  0.000GB
+admin                0.000GB
+config               0.000GB
+local                0.000GB
+
+> use Mongo_clingen_final
+switched to db Mongo_clingen_final
+
+> db
+Mongo_clingen_final
+
+> show collections
+px_final
+
+(1)
+How many women in all races are older than 50 years old.
+
+> db.px_final.count ( { "gender" : "FEMALE", "race" : {"$in" : ["WHITE", "BLACKORAFRICANAMERICAN", "ASIAN", "AMERICANINDIANORALASKANATIVE", "HISPANICORLATINO"]}, "age_at_diagnosis" : {"$gte" : 50} })
+34
+
+(2)
+How many post-menopausal patients use Arimidex within the first query.
+
+> db.px_final.count ( { "gender" : "FEMALE", "race" : {"$in" : ["WHITE", "BLACKORAFRICANAMERICAN", "ASIAN", "AMERICANINDIANORALASKANATIVE", "HISPANICORLATINO"]}, "age_at_diagnosis" : {"$gte" : 50}, "drug_name_1" : {"$in" : ["Arimidex"]}})
+12
+
+(3)
+How many people’s first surgical procedure are Lumpectomy within the second query.
+
+> db.px_final.count ( { "gender" : "FEMALE", "race" : {"$in" : ["WHITE", "BLACKORAFRICANAMERICAN", "ASIAN", "AMERICANINDIANORALASKANATIVE", "HISPANICORLATINO"]}, "age_at_diagnosis" : {"$gte" : 50}, "drug_name_1" : {"$in" : ["Arimidex"]}, "surgical_procedure_first" : "Lumpectomy"})
+9
+
+(4)
+How many patients are in the early stage of breast cancer within the third query.
+
+> db.px_final.count ( { "gender" : "FEMALE", "race" : {"$in" : ["WHITE", "BLACKORAFRICANAMERICAN", "ASIAN", "AMERICANINDIANORALASKANATIVE", "HISPANICORLATINO"]}, "age_at_diagnosis" : {"$gte" : 50}, "drug_name_1" : {"$in" : ["Arimidex"]}, "surgical_procedure_first" : "Lumpectomy", "pathologic_stage" : {"$in" : ["StageIA","StageIB"]}})
+3
+
+(5)
+How many of these 3 patients have the specific Pathogenic_Chr_Pos_1 which is “13_32903685” or “13_32890572” reported as highly expressed.
+
+> db.px_final.count ( { "gender" : "FEMALE", "race" : {"$in" : ["WHITE", "BLACKORAFRICANAMERICAN", "ASIAN", "AMERICANINDIANORALASKANATIVE", "HISPANICORLATINO"]}, "age_at_diagnosis" : {"$gte" : 50}, "drug_name_1" : {"$in" : ["Arimidex"]}, "surgical_procedure_first" : "Lumpectomy", "pathologic_stage" : {"$in" : ["StageIA","StageIB"]}, "Pathogenic_Chr_Pos_1" : {"$in"  : ["13_32903685", "13_32890572"]}, "Exon_1_RPKM_1" : {"$in"  : ["13_32903685", "13_32890572"]}})
+1
+
+brew services stop mongodb-community@5.0
+
+exit
